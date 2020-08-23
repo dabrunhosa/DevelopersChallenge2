@@ -1,0 +1,47 @@
+﻿@page "/"
+
+<MatH4>
+    Welcome to the Bank Statement Reconciler System (BSRS)
+</MatH4>
+
+
+<MatH5>
+    Below you can select the files you want to reconcile.
+    When All the files are entered press finished to generate all the Bank Transactions
+</MatH5>
+
+
+
+<MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse">
+    <MatTable Items="@multiplelist" class="mat-elevation-z5">
+        <MatTableHeader>
+            <th>File</th>
+            <th>Action</th>
+        </MatTableHeader>
+        <MatTableRow>
+            @foreach (var file in multiplelist)
+            {
+                <tr>
+                    <td>file</td>
+                    <td><MatIcon Icon="delete_forever"></MatIcon></td>
+                </tr>
+            }
+        </MatTableRow>
+    </MatTable>
+</MatFileUpload>
+
+
+
+
+@code
+        {
+    List<string> multiplelist = new List<string>();
+
+    void MultipleFilesReady(IMatFileUploadEntry[] files)
+    {
+        foreach (var file in files)
+        {
+            multiplelist.Add($"Name: {file.Name} - Size: {file.Size}");
+        }
+    }
+}
