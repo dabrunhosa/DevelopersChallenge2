@@ -1,4 +1,5 @@
-﻿using Reconcile.Domain.Enum;
+﻿using Reconcile.Domain.Consts;
+using Reconcile.Domain.Enum;
 using Reconcile.Domain.Interfaces;
 using Reconcile.Domain.Models;
 using System;
@@ -14,10 +15,6 @@ namespace Reconcile.Domain.Services
     public class OFXReaderService : IOFXReaderService
     {
         #region Members 
-
-        private readonly string initialTag = @"<(?'tag'\w+).*>";
-        private readonly string tagAndValue = @"<(?'tag'\w+).*>(?'text'.+)";
-        private readonly string closeTag = @"</\k'tag'>";
 
         private OFXFile _ofxFile;
 
@@ -37,7 +34,7 @@ namespace Reconcile.Domain.Services
                     // match first tag, and name it 'tag' 
                     // match text content, name it 'text' 
                     // match last tag, denoted by 'tag'
-                    var result = Regex.Match(line, initialTag);
+                    var result = Regex.Match(line, RegexPatterns.initialTag);
 
 
                     switch (result.Groups[1].Value)

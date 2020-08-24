@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Reconcile.Domain.Enum
+namespace Reconcile.Domain.Consts
 {
-    public class OFXTags
+    public static class OFXTags
     {
         public const string OFX = "OFX";
         public const string SIGNONMSGSRSV1 = "SIGNONMSGSRSV1";
