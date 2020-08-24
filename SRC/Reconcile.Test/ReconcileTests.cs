@@ -32,8 +32,8 @@ namespace Reconcile.Test
         #region Test Methods
 
         [Theory]
-        [InlineData("..\\OFX\\extrato1.ofx")]
-        [InlineData("..\\OFX\\extrato2.ofx")]
+        [InlineData("D:\\Projetos\\02_JobChallenge\\Nibo\\DevelopersChallenge2\\OFX\\extrato1.ofx")]
+        [InlineData("D:\\Projetos\\02_JobChallenge\\Nibo\\DevelopersChallenge2\\OFX\\extrato2.ofx")]
         public void ReadOFXFile_ShouldRecognizeOFXFile(string fileLocation)
         {
             _ofxReader.ReadFileToDTO(fileLocation);
