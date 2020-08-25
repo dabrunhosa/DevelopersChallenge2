@@ -27,32 +27,32 @@ namespace Reconcile.Domain.Services
                 // This path is a file
                 var fileRead = File.ReadLines(fileLocation);
 
-                var internalOFXFile = fileRead.SkipWhile(text => !text.Contains("<OFX>"));
+                var internalOFXFile = fileRead.SkipWhile(text => Regex.Match(text, RegexPatterns.initialTag).Groups[1].Value.Contains(OFXTags.OFX));
 
-                foreach (var line in internalOFXFile)
-                {
-                    // match first tag, and name it 'tag' 
-                    // match text content, name it 'text' 
-                    // match last tag, denoted by 'tag'
-                    var result = Regex.Match(line, RegexPatterns.initialTag);
+                //foreach (var line in internalOFXFile)
+                //{
+                //    // match first tag, and name it 'tag' 
+                //    // match text content, name it 'text' 
+                //    // match last tag, denoted by 'tag'
+                //    var result = Regex.Match(line, RegexPatterns.initialTag);
 
 
-                    switch (result.Groups[1].Value)
-                    {
-                        case OFXTags.OFX:
-                            _ofxFile = new OFXFile();
-                            break;
-                        case OFXTags.SIGNONMSGSRSV1:
-                            _ofxFile.SIGNONMSGSRSV1 = new SignonResponseMessage();
-                            break;
-                        case OFXTags.SONRS:
-                            _ofxFile.SIGNONMSGSRSV1.SONRS = new SignonResponse();
-                            break;
+                //    switch (result.Groups[1].Value)
+                //    {
+                //        case OFXTags.OFX:
+                //            _ofxFile = new OFXFile();
+                //            break;
+                //        case OFXTags.SIGNONMSGSRSV1:
+                //            _ofxFile.SIGNONMSGSRSV1 = new SignonResponseMessage();
+                //            break;
+                //        case OFXTags.SONRS:
+                //            _ofxFile.SIGNONMSGSRSV1.SONRS = new SignonResponse();
+                //            break;
                             
-                        default:
-                            break;
-                    }
-                }
+                //        default:
+                //            break;
+                //    }
+                //}
             }
             else
             {

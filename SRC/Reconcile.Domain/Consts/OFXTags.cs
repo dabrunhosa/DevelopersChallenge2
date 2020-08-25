@@ -7,8 +7,8 @@ namespace Reconcile.Domain.Consts
     public static class OFXTags
     {
         public const string OFX = "OFX";
-        public const string SIGNONMSGSRSV1 = "SIGNONMSGSRSV1";
-        public const string SONRS = "SONRS";
+        public const string SignonResponseMessage = "SIGNONMSGSRSV1";
+        public const string SignonResponse = "SONRS";
         public const string STATUS = "STATUS"; 
         public const string CODE = "CODE";
         public const string SEVERITY = "SEVERITY"; 

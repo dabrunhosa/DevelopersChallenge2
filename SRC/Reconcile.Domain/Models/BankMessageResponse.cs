@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Reconcile.Domain.Models
 {
-    public class BankMessageResponse
+    public class BankMessageResponse : BaseModel
     {
         public StatementTransactionResponse STMTTRNRS { get; set; }
     }
