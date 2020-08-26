@@ -9,9 +9,9 @@ namespace Reconcile.Domain.Models
     {
         #region Constructor
         
-        protected SignonResponse(IEnumerable<string> tags, ref int contFrom) : base(tags, ref contFrom)
+        public SignonResponse(IEnumerable<string> tags) : base(tags, OFXTags.SignonResponse)
         {
-            _tagName = OFXTags.SignonResponse;
+            STATUS = new Status(_chunkList);
         }
 
         #endregion
@@ -20,7 +20,7 @@ namespace Reconcile.Domain.Models
 
         protected override void FillModel()
         {
-            STATUS = new Status();
+            //STATUS = new Status();
         }
 
         #endregion

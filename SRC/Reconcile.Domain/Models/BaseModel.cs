@@ -1,6 +1,7 @@
 ﻿using Reconcile.Domain.Consts;
 using Reconcile.Domain.ExtensionMethods;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Reconcile.Domain.Models
@@ -10,7 +11,7 @@ namespace Reconcile.Domain.Models
         #region Members
 
         protected string _tagName;
-        protected IEnumerable<IList<string>> _chunkList;
+        protected IEnumerable<string> _chunkList;
 
         #endregion
 
@@ -21,10 +22,15 @@ namespace Reconcile.Domain.Models
         /// </summary>
         /// <param name="tags">List of lines representing part of the OFX File</param>
         /// <param name="contFrom">Line to continue part of the OFXFile</param>
-        protected BaseModel(IEnumerable<string> tags, ref int contFrom)
+        public BaseModel(IEnumerable<string> tags, string tagName)
         {
-            _chunkList = tags.ChunkOn(text => Regex.Match(text, RegexPatterns.initialTag)
-                                            .Groups[1].Value.Contains(_tagName));
+            _tagName = tagName;
+            //_chunkList = tags.ChunkOn(text =>
+            //                Regex.Match(text, RegexPatterns.initialTag)
+            //                .Groups[1].Value.Contains(_tagName));
+
+            _chunkList = tags.ChunkOn(text => text == "<" + _tagName + ">",
+                                text => text == "</" + _tagName + ">");
         }
 
         #endregion

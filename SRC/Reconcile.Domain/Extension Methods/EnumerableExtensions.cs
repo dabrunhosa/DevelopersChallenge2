@@ -6,24 +6,21 @@ namespace Reconcile.Domain.ExtensionMethods
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<IList<T>> ChunkOn<T>(this IEnumerable<T> source, Func<T, bool> startChunk)
+        public static IEnumerable<T> ChunkOn<T>(this IEnumerable<T> source,
+            Func<T, bool> startChunk, Func<T, bool> endChunk)
         {
-            List<T> list = new List<T>();
+            bool continueYield = false;
 
             foreach (var item in source)
             {
-                if (startChunk(item) && list.Count > 0)
-                {
-                    yield return list;
-                    list = new List<T>();
-                }
+                if (startChunk(item))
+                    continueYield = !continueYield;
 
-                list.Add(item);
-            }
+                if (continueYield)
+                    yield return item;
 
-            if (list.Count > 0)
-            {
-                yield return list;
+                if (endChunk(item))
+                    continueYield = !continueYield;
             }
         }
     }

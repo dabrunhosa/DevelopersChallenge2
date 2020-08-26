@@ -1,5 +1,5 @@
 ﻿using Reconcile.Domain.Consts;
-using Reconcile.Domain.Extension_Methods;
+using Reconcile.Domain.ExtensionMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +12,10 @@ namespace Reconcile.Domain.Models
     {
         #region Constructor
 
-        protected OFXFile(IQueryable<string> tags, ref int contFrom) : base(tags, ref contFrom)
+        public OFXFile(IEnumerable<string> tags) : base(tags, OFXTags.OFX)
         {
-            _tagName = OFXTags.OFX;
+            SIGNONMSGSRSV1 = new SignonResponseMessage(_chunkList);
+            BANKMSGSRSV1 = new BankMessageResponse(_chunkList);
         }
 
         #endregion
@@ -23,8 +24,10 @@ namespace Reconcile.Domain.Models
         
         protected override void FillModel()
         {
-            SIGNONMSGSRSV1 = new SignonResponseMessage();
-            BANKMSGSRSV1 = new BankMessageResponse();
+            //int ofxPosition = 0;
+
+            //SIGNONMSGSRSV1 = new SignonResponseMessage(_chunkList);
+            //BANKMSGSRSV1 = new BankMessageResponse(_chunkList);
         }
 
         #endregion

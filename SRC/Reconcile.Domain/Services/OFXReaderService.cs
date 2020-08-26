@@ -1,8 +1,10 @@
 ﻿using Reconcile.Domain.Consts;
 using Reconcile.Domain.Enum;
+using Reconcile.Domain.ExtensionMethods;
 using Reconcile.Domain.Interfaces;
 using Reconcile.Domain.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,7 +29,12 @@ namespace Reconcile.Domain.Services
                 // This path is a file
                 var fileRead = File.ReadLines(fileLocation);
 
-                var internalOFXFile = fileRead.SkipWhile(text => Regex.Match(text, RegexPatterns.initialTag).Groups[1].Value.Contains(OFXTags.OFX));
+                //IEnumerable<string> internalOFXFile = fileRead.SkipWhile(text => text != "<"+OFXTags.OFX+">");
+
+                //var internalSIGNONMSGSRSV1 = internalOFXFile.ChunkOn(text => text == "<" + OFXTags.SignonResponseMessage + ">",
+                //    text => text == "</" + OFXTags.SignonResponseMessage + ">");
+
+                _ofxFile = new OFXFile(fileRead);
 
                 //foreach (var line in internalOFXFile)
                 //{
@@ -48,7 +55,7 @@ namespace Reconcile.Domain.Services
                 //        case OFXTags.SONRS:
                 //            _ofxFile.SIGNONMSGSRSV1.SONRS = new SignonResponse();
                 //            break;
-                            
+
                 //        default:
                 //            break;
                 //    }
