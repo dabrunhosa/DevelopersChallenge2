@@ -1,5 +1,6 @@
 ﻿using Reconcile.Domain.Consts;
 using Reconcile.Domain.ExtensionMethods;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,8 +11,8 @@ namespace Reconcile.Domain.Models
     {
         #region Members
 
-        protected string _tagName;
         protected IEnumerable<string> _chunkList;
+        protected Action<string, string> _fillAction;
 
         #endregion
 
@@ -24,20 +25,40 @@ namespace Reconcile.Domain.Models
         /// <param name="contFrom">Line to continue part of the OFXFile</param>
         public BaseModel(IEnumerable<string> tags, string tagName)
         {
-            _tagName = tagName;
             //_chunkList = tags.ChunkOn(text =>
             //                Regex.Match(text, RegexPatterns.initialTag)
             //                .Groups[1].Value.Contains(_tagName));
 
-            _chunkList = tags.ChunkOn(text => text == "<" + _tagName + ">",
-                                text => text == "</" + _tagName + ">");
+            _chunkList = tags.ChunkOn(text => text == "<" + tagName + ">",
+                                text => text == "</" + tagName + ">").ToList();
         }
 
         #endregion
 
-        #region Abstract Methods
+        #region Protected Methods
 
-        protected abstract void FillModel();
+        protected void FillDTO()
+        {
+            Match tempTag, tempTagValue;
+
+            _chunkList = _chunkList.Skip(ContFrom);
+
+            foreach (var line in _chunkList)
+            {
+                tempTag = Regex.Match(line, RegexPatterns.initialTag);
+                tempTagValue = Regex.Match(line, RegexPatterns.tagAndValue);
+
+                _fillAction(tempTag.Groups[1].Value, tempTagValue.Groups[2].Value);
+
+                ContFrom++;
+            }
+        }
+
+        #endregion
+
+        #region Properties
+
+        public int ContFrom { get; set; }
 
         #endregion
     }

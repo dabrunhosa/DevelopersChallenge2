@@ -1,6 +1,8 @@
 ﻿using Reconcile.Domain.Consts;
 using Reconcile.Domain.Enum;
+using Reconcile.Domain.Extension_Methods;
 using System;
+using System.Collections.Generic;
 
 namespace Reconcile.Domain.Models
 {
@@ -8,17 +10,30 @@ namespace Reconcile.Domain.Models
     {
         #region Constructor
 
-        public Transaction(System.Collections.Generic.IEnumerable<string> tags) : base(tags, OFXTags.Transaction)
+        public Transaction(IEnumerable<string> tags) : base(tags, OFXTags.Transaction)
         {
-        }
+            ContFrom = 0;
 
-        #endregion
+            _fillAction = (tagName, tagValue) =>
+            {
+                switch (tagName)
+                {
+                    case OFXTags.TRNTYPE:
+                        TRNTYPE = (TransactionType)System.Enum.Parse(typeof(TransactionType), tagValue);
+                        break;
+                    case OFXTags.DTPOSTED:
+                        DTPOSTED = tagValue.ToDatetime();
+                        break;
+                    case OFXTags.TRNAMT:
+                        TRNAMT = Convert.ToDouble(tagValue);
+                        break;
+                    case OFXTags.MEMO:
+                        MEMO = tagValue;
+                        break;
+                }
+            };
 
-        #region BaseModels Methods
-
-        protected override void FillModel()
-        {
-            throw new NotImplementedException();
+            FillDTO();
         }
 
         #endregion

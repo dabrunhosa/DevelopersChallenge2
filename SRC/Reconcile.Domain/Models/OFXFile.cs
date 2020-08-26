@@ -14,20 +14,24 @@ namespace Reconcile.Domain.Models
 
         public OFXFile(IEnumerable<string> tags) : base(tags, OFXTags.OFX)
         {
-            SIGNONMSGSRSV1 = new SignonResponseMessage(_chunkList);
-            BANKMSGSRSV1 = new BankMessageResponse(_chunkList);
-        }
+            ContFrom = 0;
 
-        #endregion
+            _fillAction = (tagName, tagValue) =>
+            {
+                switch (tagName)
+                {
+                    case OFXTags.SignonResponseMessage:
+                        SIGNONMSGSRSV1 = new SignonResponseMessage(_chunkList);
+                        ContFrom += SIGNONMSGSRSV1.ContFrom;
+                        break;
+                    case OFXTags.BankMessageResponse:
+                        BANKMSGSRSV1 = new BankMessageResponse(_chunkList);
+                        ContFrom += BANKMSGSRSV1.ContFrom;
+                        break;
+                }
+            };
 
-        #region BaseModel Methods
-        
-        protected override void FillModel()
-        {
-            //int ofxPosition = 0;
-
-            //SIGNONMSGSRSV1 = new SignonResponseMessage(_chunkList);
-            //BANKMSGSRSV1 = new BankMessageResponse(_chunkList);
+            FillDTO();
         }
 
         #endregion

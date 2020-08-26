@@ -1,4 +1,5 @@
 ﻿using Reconcile.Domain.Consts;
+using Reconcile.Domain.Extension_Methods;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,15 +13,28 @@ namespace Reconcile.Domain.Models
         public BankTransactionList(IEnumerable<string> tags) : base(tags, OFXTags.BankTransactionList)
         {
             STMTTRNS = new List<Transaction>();
-        }
 
-        #endregion
+            ContFrom = 0;
 
-        #region BaseModels Methods
+            _fillAction = (tagName, tagValue) =>
+            {
+                switch (tagName)
+                {
+                    case OFXTags.DTSTART:
+                        DTSTART = tagValue.ToDatetime();
+                        break;
+                    case OFXTags.DTEND:
+                        DTEND = tagValue.ToDatetime();
+                        break;
+                    case OFXTags.Transaction:
+                        var tempTransaction = new Transaction(_chunkList);
+                        STMTTRNS.Add(tempTransaction);
+                        ContFrom += tempTransaction.ContFrom;
+                        break;
+                }
+            };
 
-        protected override void FillModel()
-        {
-            throw new NotImplementedException();
+            FillDTO();
         }
 
         #endregion

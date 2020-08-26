@@ -11,16 +11,9 @@ namespace Reconcile.Domain.Models
 
         public SignonResponseMessage(IEnumerable<string> tags) : base(tags, OFXTags.SignonResponseMessage)
         {
+            ContFrom = 0;
             SONRS = new SignonResponse(_chunkList);
-        }
-
-        #endregion
-
-        #region BaseModel Methods
-
-        protected override void FillModel()
-        {
-            //SONRS = new SignonResponse();
+            ContFrom += SONRS.ContFrom;
         }
 
         #endregion

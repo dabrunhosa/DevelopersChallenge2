@@ -16,15 +16,6 @@ namespace Reconcile.Domain.Models
 
         #endregion
 
-        #region BaseModel Methods
-
-        protected override void FillModel()
-        {
-            //STMTTRNRS = new StatementTransactionResponse();
-        }
-
-        #endregion
-
         #region Properties
 
         public StatementTransactionResponse STMTTRNRS { get; set; }

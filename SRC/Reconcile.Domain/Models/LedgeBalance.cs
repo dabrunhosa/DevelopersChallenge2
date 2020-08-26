@@ -1,4 +1,5 @@
 ﻿using Reconcile.Domain.Consts;
+using Reconcile.Domain.Extension_Methods;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,15 +12,22 @@ namespace Reconcile.Domain.Models
 
         public LedgeBalance(IEnumerable<string> tags) : base(tags, OFXTags.LedgeBalance)
         {
-        }
+            ContFrom = 0;
 
-        #endregion
+            _fillAction = (tagName, tagValue) =>
+            {
+                switch (tagName)
+                {
+                    case OFXTags.BALAMT:
+                        BALAMT = Convert.ToDouble(tagValue);
+                        break;
+                    case OFXTags.DTASOF:
+                        DTASOF = tagValue.ToDatetime();
+                        break;
+                }
+            };
 
-        #region BaseModels Methods
-
-        protected override void FillModel()
-        {
-            throw new NotImplementedException();
+            FillDTO();
         }
 
         #endregion

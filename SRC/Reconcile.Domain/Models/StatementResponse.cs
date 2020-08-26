@@ -12,18 +12,31 @@ namespace Reconcile.Domain.Models
 
         public StatementResponse(IEnumerable<string> tags) : base(tags, OFXTags.StatementResponse)
         {
-            BANKACCTFROM = new BankAccount(_chunkList);
-            BANKTRANLIST = new BankTransactionList(_chunkList);
-            LEDGERBAL = new LedgeBalance(_chunkList);
-        }
+            ContFrom = 0;
 
-        #endregion
+            _fillAction = (tagName, tagValue) =>
+            {
+                switch (tagName)
+                {
+                    case OFXTags.CURDEF:
+                        CURDEF = (Currency)System.Enum.Parse(typeof(Currency ), tagValue);
+                        break;
+                    case OFXTags.BankAccount:
+                        BANKACCTFROM = new BankAccount(_chunkList);
+                        ContFrom += BANKACCTFROM.ContFrom;
+                        break;
+                    case OFXTags.BankTransactionList:
+                        BANKTRANLIST = new BankTransactionList(_chunkList);
+                        ContFrom += BANKTRANLIST.ContFrom;
+                        break;
+                    case OFXTags.LedgeBalance:
+                        LEDGERBAL = new LedgeBalance(_chunkList);
+                        ContFrom += LEDGERBAL.ContFrom;
+                        break;
+                }
+            };
 
-        #region BaseModel Methods
-
-        protected override void FillModel()
-        {
-            throw new NotImplementedException();
+            FillDTO();
         }
 
         #endregion

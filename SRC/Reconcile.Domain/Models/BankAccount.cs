@@ -1,5 +1,6 @@
 ﻿using Reconcile.Domain.Consts;
 using Reconcile.Domain.Enum;
+using System;
 
 namespace Reconcile.Domain.Models
 {
@@ -9,15 +10,25 @@ namespace Reconcile.Domain.Models
 
         public BankAccount(System.Collections.Generic.IEnumerable<string> tags) : base(tags, OFXTags.BankAccount)
         {
-        }
+            ContFrom = 0;
 
-        #endregion
+            _fillAction = (tagName, tagValue) =>
+            {
+                switch (tagName)
+                {
+                    case OFXTags.BANKID:
+                        BANKID = Convert.ToInt32(tagValue);
+                        break;
+                    case OFXTags.ACCTID:
+                        ACCTID = Convert.ToInt64(tagValue);
+                        break;
+                    case OFXTags.ACCTTYPE:
+                        ACCTTYPE = (AccountType)System.Enum.Parse(typeof(AccountType), tagValue);
+                        break;
+                }
+            };
 
-        #region BaseModel Methods
-
-        protected override void FillModel()
-        {
-            throw new System.NotImplementedException();
+            FillDTO();
         }
 
         #endregion
@@ -25,7 +36,7 @@ namespace Reconcile.Domain.Models
         #region Properties
 
         public int BANKID { get; set; }
-        public int ACCTID { get; set; }
+        public long ACCTID { get; set; }
         public AccountType ACCTTYPE { get; set; }
 
         #endregion

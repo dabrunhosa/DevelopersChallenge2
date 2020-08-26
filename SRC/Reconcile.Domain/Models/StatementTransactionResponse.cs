@@ -11,17 +11,26 @@ namespace Reconcile.Domain.Models
 
         public StatementTransactionResponse(IEnumerable<string> tags) : base(tags, OFXTags.StatementTransactionResponse)
         {
-            STATUS = new Status(_chunkList);
-            STMTRS = new StatementResponse(_chunkList);
-        }
+            ContFrom = 0;
+            _fillAction = (tagName, tagValue) =>
+            {
+                switch (tagName)
+                {
+                    case OFXTags.TRNUID:
+                        TRNUID = Convert.ToInt32(tagValue);
+                        break;
+                    case OFXTags.STATUS:
+                        STATUS = new Status(_chunkList);
+                        ContFrom += STATUS.ContFrom;
+                        break;
+                    case OFXTags.StatementResponse:
+                        STMTRS = new StatementResponse(_chunkList);
+                        ContFrom += STMTRS.ContFrom;
+                        break;
+                }
+            };
 
-        #endregion
-
-        #region BaseModel Methods
-
-        protected override void FillModel()
-        {
-            throw new NotImplementedException();
+            FillDTO();
         }
 
         #endregion
