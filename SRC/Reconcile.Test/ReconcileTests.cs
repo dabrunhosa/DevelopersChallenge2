@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Reconcile.Domain.Interfaces;
+using Reconcile.Domain.Models;
 using Reconcile.Domain.Services;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,6 @@ namespace Reconcile.Test
 
         // We use sut to identify as a subject under test
         private readonly IReconcileService _sut;
-        private readonly IOFXReaderService _ofxReader;
 
         #endregion
 
@@ -22,9 +23,7 @@ namespace Reconcile.Test
 
         public ReconcileTests()
         {
-            _ofxReader = new OFXReaderService();
-
-            _sut = new ReconcileService(_ofxReader);
+            _sut = new ReconcileService();
         }
 
         #endregion
@@ -36,7 +35,33 @@ namespace Reconcile.Test
         [InlineData("D:\\Projetos\\02_JobChallenge\\Nibo\\DevelopersChallenge2\\OFX\\extrato2.ofx")]
         public void ReadOFXFile_ShouldRecognizeOFXFile(string fileLocation)
         {
-            _ofxReader.ReadFileToDTO(fileLocation);
+            _sut.ReadFileToDTO(fileLocation)
+                .Should()
+                .NotBeNull();
+        }
+
+        [Fact]
+        public void ReadOFXFile_ShouldReadMultipleFiles()
+        {
+            List<string> ofxFiles = new List<string>();
+
+            ofxFiles.Add("D:\\Projetos\\02_JobChallenge\\Nibo\\DevelopersChallenge2\\OFX\\extrato1.ofx");
+            ofxFiles.Add("D:\\Projetos\\02_JobChallenge\\Nibo\\DevelopersChallenge2\\OFX\\extrato2.ofx");
+
+            _sut.ReadFileToDTO(ofxFiles)
+                .Should()
+                .NotBeSameAs(new List<OFXFile>());
+        }
+
+        [Fact]
+        public void OFXFiles_ShouldReconcileTransactions()
+        {
+            List<string> ofxFiles = new List<string>();
+
+            ofxFiles.Add("D:\\Projetos\\02_JobChallenge\\Nibo\\DevelopersChallenge2\\OFX\\extrato1.ofx");
+            ofxFiles.Add("D:\\Projetos\\02_JobChallenge\\Nibo\\DevelopersChallenge2\\OFX\\extrato2.ofx");
+
+            _sut.ReconcileTransactions(_sut.ReadFileToDTO(ofxFiles));
         }
 
         #endregion
