@@ -20,7 +20,10 @@ namespace Reconcile.Domain.ExtensionMethods
                     yield return item;
 
                 if (endChunk(item))
+                {
                     continueYield = !continueYield;
+                    break;
+                }
             }
         }
     }

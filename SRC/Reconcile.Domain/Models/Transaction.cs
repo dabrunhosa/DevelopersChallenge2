@@ -10,7 +10,7 @@ namespace Reconcile.Domain.Models
     {
         #region Constructor
 
-        public Transaction(IEnumerable<string> tags) : base(tags, OFXTags.Transaction)
+        public Transaction(IEnumerable<string> tags, int contFrom) : base(tags, OFXTags.Transaction, contFrom)
         {
             ContFrom = 0;
 

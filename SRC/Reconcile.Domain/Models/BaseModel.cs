@@ -23,13 +23,13 @@ namespace Reconcile.Domain.Models
         /// </summary>
         /// <param name="tags">List of lines representing part of the OFX File</param>
         /// <param name="contFrom">Line to continue part of the OFXFile</param>
-        public BaseModel(IEnumerable<string> tags, string tagName)
+        public BaseModel(IEnumerable<string> tags, string tagName, int skipAmount = 0)
         {
             //_chunkList = tags.ChunkOn(text =>
             //                Regex.Match(text, RegexPatterns.initialTag)
             //                .Groups[1].Value.Contains(_tagName));
 
-            _chunkList = tags.ChunkOn(text => text == "<" + tagName + ">",
+            _chunkList = tags.Skip(skipAmount).ChunkOn(text => text == "<" + tagName + ">",
                                 text => text == "</" + tagName + ">").ToList();
         }
 
@@ -41,14 +41,15 @@ namespace Reconcile.Domain.Models
         {
             Match tempTag, tempTagValue;
 
-            _chunkList = _chunkList.Skip(ContFrom);
-
             foreach (var line in _chunkList)
             {
-                tempTag = Regex.Match(line, RegexPatterns.initialTag);
-                tempTagValue = Regex.Match(line, RegexPatterns.tagAndValue);
+                if (ContFrom >= SkipUntil)
+                {
+                    tempTag = Regex.Match(line, RegexPatterns.initialTag);
+                    tempTagValue = Regex.Match(line, RegexPatterns.tagAndValue);
 
-                _fillAction(tempTag.Groups[1].Value, tempTagValue.Groups[2].Value);
+                    _fillAction(tempTag.Groups[1].Value, tempTagValue.Groups[2].Value);
+                }
 
                 ContFrom++;
             }
@@ -59,6 +60,7 @@ namespace Reconcile.Domain.Models
         #region Properties
 
         public int ContFrom { get; set; }
+        public int SkipUntil { get; set; }
 
         #endregion
     }

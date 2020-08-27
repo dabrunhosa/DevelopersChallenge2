@@ -15,7 +15,6 @@ namespace Reconcile.Domain.Models
             STMTTRNS = new List<Transaction>();
 
             ContFrom = 0;
-
             _fillAction = (tagName, tagValue) =>
             {
                 switch (tagName)
@@ -27,9 +26,10 @@ namespace Reconcile.Domain.Models
                         DTEND = tagValue.ToDatetime();
                         break;
                     case OFXTags.Transaction:
-                        var tempTransaction = new Transaction(_chunkList);
+                        var tempTransaction = new Transaction(_chunkList, SkipUntil);
+                        SkipUntil += (STMTTRNS.Count == 0 ? ContFrom: 0) + tempTransaction.ContFrom;
+
                         STMTTRNS.Add(tempTransaction);
-                        ContFrom += tempTransaction.ContFrom;
                         break;
                 }
             };
