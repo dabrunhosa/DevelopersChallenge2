@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Reconcile.Domain.Services
 {
@@ -66,15 +67,18 @@ namespace Reconcile.Domain.Services
             return ofxFiles;
         }
 
-        #endregion
+        #endregion Read OFX Files
 
-        public void ReconcileTransactions(List<OFXFile> ofxFiles)
+        #region Reconcile Transactions
+
+        public List<Transaction> ReconcileTransactions(List<OFXFile> ofxFiles)
         {
-            List<Transaction> transactions = new List<Transaction>();
-
-            var teste = ofxFiles.Select(ofx => ofx.BANKMSGSRSV1.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRNS);
+            return ofxFiles.Select(ofx => ofx.BANKMSGSRSV1.STMTTRNRS.STMTRS.BANKTRANLIST.STMTTRNS)
+                .Aggregate((list1, list2) => list1.Union(list2).OrderBy(x => x.DTPOSTED).ToList());
         }
 
-        #endregion 
+        #endregion Reconcile Transactions
+
+        #endregion Public Methods
     }
 }

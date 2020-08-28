@@ -7,6 +7,6 @@ namespace Reconcile.Domain.Interfaces
     {
         OFXFile ReadFileToDTO(string fileLocation);
         List<OFXFile> ReadFileToDTO(List<string> ofxFiles);
-        void ReconcileTransactions(List<OFXFile> ofxFiles);
+        List<Transaction> ReconcileTransactions(List<OFXFile> ofxFiles);
     }
 }

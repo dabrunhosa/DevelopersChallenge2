@@ -1,4 +1,6 @@
-﻿@page "/"
+﻿@using Reconcile.Domain.Services
+
+@page "/"
 
 <MatH4>
     Welcome to the Bank Statement Reconciler System (BSRS)
@@ -12,36 +14,44 @@
 
 
 
-<MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse">
-    <MatTable Items="@multiplelist" class="mat-elevation-z5">
-        <MatTableHeader>
-            <th>File</th>
-            <th>Action</th>
-        </MatTableHeader>
-        <MatTableRow>
-            @foreach (var file in multiplelist)
-            {
-                <tr>
-                    <td>file</td>
-                    <td><MatIcon Icon="delete_forever"></MatIcon></td>
-                </tr>
-            }
-        </MatTableRow>
-    </MatTable>
-</MatFileUpload>
+<MatFileUpload OnChange="@MultipleFilesReady" AllowMultiple="true" Label="Drop files here or Browse" />
+
+<MatTable Items="@multiplelist" class="mat-elevation-z5"
+          ShowPaging="false" h>
+    <MatTableHeader>
+        <th>File</th>
+        <th>Action</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td width="100%">@context.Item1</td>
+        <td width="20%"><MatButton Icon="delete_forever" OnClick="@RemoveOnClick" /></td>
+    </MatTableRow>
+</MatTable>
+
+<MatButton Raised="true" OnClick="@ReconcileTransactions">Reconcile OFXs Files</MatButton>
 
 
 
 
 @code
-        {
-    List<string> multiplelist = new List<string>();
+{
+    List<(string, IMatFileUploadEntry)> multiplelist = new List<(string, IMatFileUploadEntry)>();
 
     void MultipleFilesReady(IMatFileUploadEntry[] files)
     {
         foreach (var file in files)
         {
-            multiplelist.Add($"Name: {file.Name} - Size: {file.Size}");
+            multiplelist.Add(($"Name: {file.Name} - Size: {file.Size}", file));
         }
+    }
+
+    public void RemoveOnClick(MouseEventArgs e)
+    {
+        //e.
+    }
+
+    public void ReconcileTransactions(MouseEventArgs e)
+    {
+
     }
 }
